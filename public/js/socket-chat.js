@@ -1,5 +1,5 @@
 const socket = io();
-const parametros = new URLSearchParams(window.location.search);
+// const parametros = new URLSearchParams(window.location.search);
 
 if (!parametros.has('nombre') || !parametros.has('sala')) {
     window.location = 'index.html';
@@ -21,7 +21,7 @@ socket.on('connect', () => {
     // ?  Entrada del usuario al chat
     // ? =============================
     socket.emit('entrarChat', usuario, (resp) => {
-        console.log('Usuarios Conectados ', resp);
+        renderizarUsuarios(resp);
     });
 });
 
@@ -32,20 +32,24 @@ socket.on('disconnect', () => {
     console.log('Perdimos conexión con el servidor.');
 });
 
+// * =================
+// *  Mandar Mensajes
+// * =================
 // socket.on('crearMensaje', {usuario: 'Fernando', mensaje: 'Hola Mundo'}, (resp) => {
 //     console.log(`Respuesta del servidor: ${mensaje}`);
 // });
 
 socket.on('crearMensaje', (mensaje) => {
-    console.log(`Servidor: ${mensaje}`);
+    renderizarMensajes(mensaje, false);
+    scrollBottom();
 });
 
 
 // * ==============================
 // *  Lista de usuarios conectados
 // * ==============================
-socket.on('listaPersona', (mensaje) => {
-    console.log(mensaje);
+socket.on('listaPersona', (personas) => {
+    renderizarUsuarios(personas);
 });
 
 // * ===================
